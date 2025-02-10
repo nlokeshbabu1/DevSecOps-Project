@@ -1,0 +1,95 @@
+name: creating CI pipeline
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write 
+  security-events: write 
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install dependencies
+        run: npm install
+      - name: Run tests
+        run: npm test
+  
+  Analysis:
+    runs-on: self-hosted
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+     #Set up SonarQube
+      - name: sonarqube scan
+        uses: SonarSource/sonarqube-scan-action@7295e71c9583053f5bf40e9d4068a0c974603ec8
+        env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: sonar.projectKey=netfilx
+
+    #check the quality gate
+      - name: SonarCloud Quality Gate
+        id:  sonarqube-quality-gate-check
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      - name: "Example show SonarQube Quality Gate Status value"
+        run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
+
+  docker-image-build:
+    runs-on: self-hosted
+    needs: Analysis
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: login to docker
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+    
+      - name: setup DOcker buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          build-args: |
+            TMDB_V3_API_KEY=${{ secrets.API_KEY }}           
+          tags: ${{ secrets.DOCKER_USERNAME }}/netflix:${{ github.run_id }}
+    
+  trivy_scan:
+    runs-on: self-hosted
+    needs: build
+    steps:
+              - name: Run Trivy vulnerability scanner
+                uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+                with:
+                  image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/sample-nodejs:${{github.run_id}}'
+                  format: 'template'
+                  template: '@/contrib/sarif.tpl'
+                  output: 'trivy-results.sarif'
+                  severity: 'CRITICAL,HIGH'
+        
+              - name: Upload Trivy scan results to GitHub Security tab
+                uses: github/codeql-action/upload-sarif@v3
+                with:
+                  sarif_file: 'trivy-results.sarif'
