@@ -38,7 +38,8 @@ jobs:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
             SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
-          args: sonar.projectKey=netfilx
+          args: 
+            -Dsonar.projectKey=netfilx
 
     #check the quality gate
       - name: SonarCloud Quality Gate
