@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   setup:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -25,7 +25,7 @@ jobs:
         run: npm test
   
   Analysis:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: setup  
     steps:
       - name: Checkout code
@@ -53,7 +53,7 @@ jobs:
         run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
 
   docker-image-build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: Analysis
     steps:
       - name: Checkout code
@@ -78,7 +78,7 @@ jobs:
           tags: ${{ secrets.DOCKER_USERNAME }}/netflix:${{ github.run_id }}
     
   trivy_scan:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: docker-image-build
     steps:
               - name: Run Trivy vulnerability scanner
