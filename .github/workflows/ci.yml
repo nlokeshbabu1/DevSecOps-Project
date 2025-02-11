@@ -88,7 +88,7 @@ jobs:
               - name: Run Trivy vulnerability scanner
                 uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
                 with:
-                  image-ref: '${{ secrets.DOCKER_USERNAME }}/sample-nodejs:${{github.run_id}}'
+                  image-ref: '${{ secrets.DOCKER_USERNAME }}/netflix:${{github.run_id}}'
                   format: 'template'
                   template: '@/contrib/sarif.tpl'
                   output: 'trivy-results.sarif'
