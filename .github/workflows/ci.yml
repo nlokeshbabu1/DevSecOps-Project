@@ -42,6 +42,10 @@ jobs:
             -Dsonar.projectKey=netflix
 
 
+      - name: Clean up previous scanner work
+        run: rm -rf $GITHUB_WORKSPACE/.scannerwork/*
+
+
     #check the quality gate
       - name: SonarCloud Quality Gate
         id:  sonarqube-quality-gate-check
@@ -50,9 +54,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
-          args: 
-             
-            sudo -Dsonar.projectKey=netflix
+          args:        
+            -Dsonar.projectKey=netflix
 
       - name: "Example show SonarQube Quality Gate Status value"
         run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
