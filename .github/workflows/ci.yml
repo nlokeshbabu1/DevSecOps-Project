@@ -49,13 +49,11 @@ jobs:
     #check the quality gate
       - name: SonarCloud Quality Gate
         id:  sonarqube-quality-gate-check
-        uses: SonarSource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-quality-gate-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        with:
-          args:        
-            -Dsonar.projectKey=netflix
+
 
       - name: "Example show SonarQube Quality Gate Status value"
         run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
