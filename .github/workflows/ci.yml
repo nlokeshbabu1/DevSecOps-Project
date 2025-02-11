@@ -43,7 +43,7 @@ jobs:
 
 
       - name: Clean up previous scanner work
-        run: rm -rf $GITHUB_WORKSPACE/.scannerwork/*
+        run: sudo rm -rf $GITHUB_WORKSPACE/.scannerwork/*
 
 
     #check the quality gate
