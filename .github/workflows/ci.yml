@@ -40,9 +40,7 @@ jobs:
         with:
           args: 
             -Dsonar.projectKey=netflix
-      - name: Sonarqube scan
-        run:
-          sonar-scanner -X
+
 
     #check the quality gate
       - name: SonarCloud Quality Gate
