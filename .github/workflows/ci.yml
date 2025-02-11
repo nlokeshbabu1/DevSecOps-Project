@@ -117,7 +117,7 @@ jobs:
         run: |
           git config --global user.name "nlokeshbabu1"
           git config --global user.email "nlokeshbabu.nalluri1111@gmail.com"
-          git add kubernetes/deployment.yaml
+          git add Kubernetes/deployment.yaml
           git commit -m "update the image tag with the latest image"
           git push --force    
 
