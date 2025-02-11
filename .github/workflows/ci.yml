@@ -110,7 +110,7 @@ jobs:
       #updating the image tag with the latest image
       - name: update the image tag with the latest image
         run: |
-          sed -i "s|image:.*|image: ${{ secrets.DOCKER_USERNAME }}/netflix:${{github.run_id}}|g" kubernetes/deployment.yaml
+          sed -i "s|image:.*|image: ${{ secrets.DOCKER_USERNAME }}/netflix:${{github.run_id}}|g" kubernetes/deployment.yml
         
       #commit the changes to the deployment file
       - name: commit the changes to the deployment file
