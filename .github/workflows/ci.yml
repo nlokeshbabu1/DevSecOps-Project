@@ -39,7 +39,10 @@ jobs:
             SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: 
-            -Dsonar.projectKey=netfilx
+            -Dsonar.projectKey=netflix
+      - name: Sonarqube scan
+        run:
+          sonar-scanner -X
 
     #check the quality gate
       - name: SonarCloud Quality Gate
