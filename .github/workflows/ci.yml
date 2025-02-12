@@ -39,7 +39,7 @@ jobs:
             SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: 
-            sonar-scanner -X -Dsonar.projectKey=netflix 
+            -Dsonar.projectKey=netflix 
 
 
     #check the quality gate
