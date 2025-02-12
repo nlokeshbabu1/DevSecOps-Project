@@ -40,7 +40,7 @@ jobs:
         with:
           args: 
             -Dsonar.projectKey=netfilx 
-            - X 
+            
 
 
     #check the quality gate
